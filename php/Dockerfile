@@ -16,7 +16,14 @@ RUN apk add --update \
         less \
         git \
         gnu-libiconv \
-    && install-php-extensions bcmath intl opcache zip xdebug pcntl uuid
+    && install-php-extensions \
+        bcmath-stable \
+        intl-stable \
+        opcache-stable \
+        pcntl-stable \
+        uuid-stable \
+        xdebug-stable \
+        zip-stable
 
 ARG UID=1000
 ARG GID=1000
