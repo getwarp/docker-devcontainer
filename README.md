@@ -3,7 +3,7 @@
 ## PHP
 
 ```
-docker pull ghcr.io/getwarp/warp-php-devcontainer:8.1
+docker pull ghcr.io/getwarp/warp-php-devcontainer:8.2
 ```
 
 Tags:
@@ -13,3 +13,4 @@ Tags:
 - `7.4`
 - `8.0`
 - `8.1`
+- `8.2`

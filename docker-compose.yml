@@ -1,15 +1,23 @@
-version: '3'
+version: '3.9'
 
 services:
-  devcontainer:
-    image: ghcr.io/getwarp/warp-php-devcontainer:8.1
+  php:
+    image: ghcr.io/getwarp/warp-php-devcontainer:8.2
+    build:
+      target: php8
+      args:
+        PHP_VERSION: 8.2
+        UID: 1000
+        GID: 1000
     command: [ 'sleep', 'infinite' ]
     environment:
       # See https://xdebug.org/docs/all_settings for more
       XDEBUG_CONFIG: 'idekey=warp client_host=host.docker.internal'
       XDEBUG_MODE: 'debug'
     volumes:
-      - ./:/home/warp/app
+      - type: bind
+        source: .
+        target: /home/warp/app
     restart: unless-stopped
     extra_hosts:
       - host.docker.internal:host-gateway

@@ -12,7 +12,7 @@ env:
   XDEBUG_MODE: off
 
 jobs:
-  docker:
+  php7:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -21,8 +21,6 @@ jobs:
           - '7.2'
           - '7.3'
           - '7.4'
-          - '8.0'
-          - '8.1'
     permissions:
       contents: read
       packages: write
@@ -48,7 +46,52 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: php/Dockerfile
+          file: Dockerfile
+          target: php7
+          build-args: PHP_VERSION=${{ matrix.php-version }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          pull: true
+          push: true
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ matrix.php-version }}
+          cache-to: type=inline
+
+  php8:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '8.0'
+          - '8.1'
+          - '8.2'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: type=raw,value=${{ matrix.php-version }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: Dockerfile
+          target: php8
           build-args: PHP_VERSION=${{ matrix.php-version }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
